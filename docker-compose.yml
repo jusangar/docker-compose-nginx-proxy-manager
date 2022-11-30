@@ -1,30 +1,20 @@
-services:
-  app:
-    image: 'jc21/nginx-proxy-manager:latest'
-    container_name: npm
-    restart: unless-stopped
-    ports:
-      # These ports are in format <host-port>:<container-port>
-      - '80:80' # Public HTTP Port
-      - '443:443' # Public HTTPS Port
-      - '81:81' # Admin Web Port
-      # Add any other Stream port you want to expose
-#      - '21:21' # FTP Port //Not working for me
+networks:
+  frontend: # Name of the network
+    external: true # Set to true to use an existing network
 
-    # Uncomment the next line if you uncomment anything in the section
-    # environment:
+services:
+  npm:
+    image: 'jc21/nginx-proxy-manager'
+    container_name: npm # Optional - Name of the container
+    restart: always
+   # environment:
       # Uncomment this if you want to change the location of 
       # the SQLite DB file within the container
       # DB_SQLITE_FILE: "/data/database.sqlite"
-
-      # Uncomment this if IPv6 is not enabled on your host
-      # DISABLE_IPV6: 'true'
-
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
-
-networks:
-  default:
-    external: true
-    name: noctis
+      - /root/s-npm/data:/data  # Change host path to your liking
+      - /root/s-npm/letsencrypt:/etc/letsencrypt # Change host path to your liking
+      - ports:
+          - '80:80' # Public HTTP Port
+          - '443:443' # Public HTTPS Port
+          - '81:81' # Admin Web Port
